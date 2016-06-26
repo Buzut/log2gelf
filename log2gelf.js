@@ -2,21 +2,21 @@
 
 // validate parameters
 if (process.argv.length !== 9) {
-    console.error('Usage: log2gelf hostname gelfhost gelfport logType logfilepath protocol secure');
+    console.error('Usage: log2gelf hostname gelfhost gelfport protocol secure logType logfilepath');
     process.exit(3);
 }
 
-if (process.argv[5] !== 'syslog' && process.argv[5] !== 'apache' && process.argv[5] !== 'nginx') {
+if (process.argv[7] !== 'syslog' && process.argv[7] !== 'apache' && process.argv[7] !== 'nginx') {
     console.error('logType must be syslog, apache or nginx');
     process.exit(3);
 }
 
-if (process.argv[7] !== 'tcp' && process.argv[7] !== 'http') {
+if (process.argv[5] !== 'tcp' && process.argv[5] !== 'http') {
     console.error('Protocol must be either http or tcp');
     process.exit(3);
 }
 
-if (process.argv[8] !== 'true' && process.argv[8] !== 'false') {
+if (process.argv[6] !== 'true' && process.argv[6] !== 'false') {
     console.error('Secure is a boolean');
     process.exit(3);
 }
@@ -24,14 +24,15 @@ if (process.argv[8] !== 'true' && process.argv[8] !== 'false') {
 const hostname = process.argv[2];
 const host = process.argv[3];
 const port = process.argv[4];
-const logType = process.argv[5];
-const logfile = process.argv[6];
-const protocol = process.argv[7];
+const protocol = process.argv[5];
+const logType = process.argv[7];
+const logfile = process.argv[8];
+
 
 const fs = require('fs');
 const Tail = require('always-tail');
-const net = (process.argv[8]) ? require('tls') : require('net');
-const http = (process.argv[8]) ? require('https') : require('http');
+const net = (process.argv[6]) ? require('tls') : require('net');
+const http = (process.argv[6]) ? require('https') : require('http');
 
 // make sure log file exists and is readable
 try {
@@ -155,10 +156,10 @@ function sendHTTPGelf(msg) {
         }
     };
 
-    // usefull for debug
-    /*var req = http.request(options, (res) => {
-        console.log('statusCode: ', res.statusCode);
-    });*/
+    var req = http.request(options, (res) => {
+        // usefull for debug
+        //console.log('statusCode: ', res.statusCode);
+    });
 
     req.on('error', (e) => {
         console.error(e);
@@ -171,8 +172,13 @@ function sendHTTPGelf(msg) {
 // same behaviour as a tail -f
 var tail = new Tail(logfile, '\n');
 tail.on('line', function(data) {
-    if (protocol === 'tcp') sendTCPGelf(convertToGELF(data));
-    else sendHTTPGelf(convertToGELF(data));
+    var gelfEncoded;
+    if (logType === 'syslog') gelfEncoded = convertSyslogToGELF(data);
+    else if (logType === 'apache') gelfEncoded = convertApacheToGELF(data);
+    else gelfEncoded = convertNginxToGELF(data);
+
+    if (protocol === 'tcp') sendTCPGelf(gelfEncoded);
+    else sendHTTPGelf(gelfEncoded);
 });
 
 tail.on('error', function(data) {
