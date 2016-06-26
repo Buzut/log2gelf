@@ -1,0 +1,28 @@
+{
+  "name": "log2gelf",
+  "preferGlobal": true,
+  "version": "1.0.0",
+  "description": "Nodejs utility to read syslog, nginx or apache error log and send them to Graylog or Gelf server via TCP or HTTP",
+  "main": "log2gelf.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Buzut/log2gelf.git"
+  },
+  "keywords": [
+    "monitoring",
+    "logs",
+    "syslog",
+    "apache",
+    "apache2",
+    "nginx"
+  ],
+  "author": "Buzut (buzut.fr)",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/Buzut/log2gelf/issues"
+  },
+  "bin": "./log2gelf.js",
+  "dependencies": {
+    "always-tail": "^0.2.0"
+  }
+}
