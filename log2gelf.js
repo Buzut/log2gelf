@@ -58,7 +58,8 @@ function convertSyslogToGELF(line) {
         "host": hostname,
         "short_message": log[3],
         "timestamp": timestamp,
-        "_service": log[2]
+        "_service": log[2],
+        "_logtype": logType
     });
 }
 
