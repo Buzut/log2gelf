@@ -77,7 +77,8 @@ function convertApacheToGELF(line) {
     return JSON.stringify({
         "host": hostname,
         "short_message": log[3],
-        "timestamp": timestamp
+        "timestamp": timestamp,
+        "_logtype": logType
     });
 }
 
@@ -99,7 +100,8 @@ function convertNginxToGELF(line) {
     return JSON.stringify({
         "host": hostname,
         "short_message": log[3],
-        "timestamp": timestamp
+        "timestamp": timestamp,
+        "_logtype": logType
     });
 }
 
