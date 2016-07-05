@@ -6,7 +6,7 @@ Node.js utility that reads directly from syslog, nginx or apache error log file 
 
 Install with `npm install log2gelf -g` and you're ready to go!
 
-The script is intended to be started on boot to monitor logs effectively. As such, you'll usually want to start it from `rc.local`.
+The script is intended to be started on boot to monitor logs effectively. As such, you'll usually want to start it from `rc.local` or even using a crontab to make sure it's always running.
 
 ```bash
 log2gelf hostname gelfhost gelfport protocol secure logType logfilepath
@@ -33,3 +33,13 @@ log2gelf web2 logs.mycompany.com 12201 tcp true syslog /var/log/syslog
 
 ### nginx error log
 `2016/06/26 10:08:43 [warn] 28604#28604: no resolver defined to resolve ocsp.int-x3.letsencrypt.org while requesting certificate status, responder: ocsp.int-x3.letsencrypt.org`
+
+## Launch script
+```bash
+#!/bin/bash
+
+if ! ps aux | grep -v grep | grep "/usr/bin/nodejs /usr/bin/log2gelf"
+then
+/usr/bin/log2gelf hostname gelfhost 12201 tcp true syslog /var/log/syslog 2>&1 | logger &
+fi
+```
