@@ -1,7 +1,7 @@
 {
   "name": "log2gelf",
   "preferGlobal": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Nodejs utility to read syslog, nginx or apache error log and send them to Graylog or Gelf server via TCP or HTTP",
   "main": "log2gelf.js",
   "repository": {
