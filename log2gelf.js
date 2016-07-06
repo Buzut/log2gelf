@@ -48,7 +48,7 @@ catch (e) {
  * @return {string} msg – JSON stringified GELF msg
  */
 function convertSyslogToGELF(line) {
-    const regex = /([a-zA-Z]{3}  ?[0-9]{1,2} [0-9]{2}:[0-9]{2}:[0-9]{2}) [a-z0-9-]* (.*): (.*)/g;
+    const regex = /([a-zA-Z]{3}  ?[0-9]{1,2} [0-9]{2}:[0-9]{2}:[0-9]{2}) [a-z0-9-]* (.*?): (.*)/g;
 
     var log = regex.exec(line);
     var year = new Date().getFullYear();
