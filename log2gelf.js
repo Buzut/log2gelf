@@ -110,34 +110,33 @@ function convertNginxToGELF(line) {
  * @param {string} msg – JSON stringified GELF msg
  */
 var sendTCPGelf = (function () {
-    var client;
-    var TCPcon = false;
+    var options = {
+        host: host,
+        port: port,
+        rejectUnauthorized: false
+    };
+
+    var client = net.connect(options, () => {
+        console.log('Connected to GELF server');
+    });
+
+    client.on('end', () => {
+        console.log('disconnected from GELF server');
+        process.exit(0);
+    });
+
+    client.on('error', (err) => {
+        console.error(err);
+        process.exit(3);
+    });
 
     return (msg) => {
-        if (TCPcon) {
-            return client.write(msg + '\0');
-        }
-
-        var options = {
-            host: host,
-            port: port,
-            rejectUnauthorized: false
-        };
-
-        client = net.connect(options, () => {
-            console.log('Connected to server');
-            TCPcon = true;
-
-            return client.write(msg + '\0');
-        });
-
-        client.on('end', () => {
-            console.log('Disconnected from server');
-            TCPcon = false;
-        });
+        console.log('TCP call');
+        client.write(msg + '\0');
 
         client.on('error', (err) => {
             console.error(err);
+            process.exit(3);
         });
     };
 })();
