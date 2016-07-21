@@ -131,7 +131,6 @@ var sendTCPGelf = (function () {
     });
 
     return (msg) => {
-        console.log('TCP call');
         client.write(msg + '\0');
 
         client.on('error', (err) => {
