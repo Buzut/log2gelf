@@ -76,7 +76,7 @@ function convertApacheToGELF(line) {
 
     return JSON.stringify({
         "host": hostname,
-        "short_message": log[3],
+        "short_message": log[2],
         "timestamp": timestamp,
         "_logtype": logType
     });
@@ -87,7 +87,7 @@ function convertApacheToGELF(line) {
  * @return {string} msg – JSON stringified GELF msg
  */
 function convertNginxToGELF(line) {
-    const regex = /\[[a-zA-Z]{3} ([a-zA-Z]{3} [0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})\.[0-9]{6} [0-9]{4}\] (.*)/g;
+    const regex = /.+ ([0-9]{2}:[0-9]{2}:[0-9]{2}) \[[a-z]+\] [0-9]+#[0-9]+: (.*)/g;
 
     var log = regex.exec(line);
     var d = new Date();
@@ -99,7 +99,7 @@ function convertNginxToGELF(line) {
 
     return JSON.stringify({
         "host": hostname,
-        "short_message": log[3],
+        "short_message": log[2],
         "timestamp": timestamp,
         "_logtype": logType
     });
